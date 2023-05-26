@@ -5,6 +5,7 @@ import com.br.r.adopet.model.tutor.Tutor;
 import com.br.r.adopet.model.tutor.TutorListingData;
 import com.br.r.adopet.model.tutor.TutorRegisterData;
 import com.br.r.adopet.model.tutor.TutorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,19 @@ public class TutorController {
                 .toList();
 
         return ResponseEntity.ok(tutorsListingData);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            Tutor tutor = tutorRepository.getReferenceById(id);
+            System.out.println(id);
+            System.out.println(tutor);
+            return ResponseEntity.ok(new TutorListingData(tutor));
+        } catch (EntityNotFoundException exception) {
+            exception.printStackTrace();
+            return  ResponseEntity.ok(ErrorMessage.TUTOR_NOT_FOUND.getMessage());
+        }
+
     }
 }
