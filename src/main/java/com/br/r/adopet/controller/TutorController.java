@@ -1,6 +1,6 @@
 package com.br.r.adopet.controller;
 
-import com.br.r.adopet.model.error.ErrorMessage;
+import com.br.r.adopet.model.message.Message;
 import com.br.r.adopet.model.tutor.Tutor;
 import com.br.r.adopet.model.tutor.TutorListingData;
 import com.br.r.adopet.model.tutor.TutorRegisterData;
@@ -34,7 +34,7 @@ public class TutorController {
     public ResponseEntity<?> get() {
         List<Tutor> tutors = tutorRepository.findAll();
         if (tutors.isEmpty()) {
-            return ResponseEntity.ok(ErrorMessage.TUTOR_NOT_FOUND.getMessage());
+            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
         }
 
         List<TutorListingData> tutorsListingData = tutors.stream()
@@ -48,13 +48,21 @@ public class TutorController {
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
             Tutor tutor = tutorRepository.getReferenceById(id);
-            System.out.println(id);
-            System.out.println(tutor);
             return ResponseEntity.ok(new TutorListingData(tutor));
         } catch (EntityNotFoundException exception) {
             exception.printStackTrace();
-            return  ResponseEntity.ok(ErrorMessage.TUTOR_NOT_FOUND.getMessage());
+            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
         }
 
+    }
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        if (!tutorRepository.existsById(id)) {
+            return ResponseEntity.ok(Message.TUTOR_NOT_DELETED.getMessage());
+        }
+        tutorRepository.deleteById(id);
+        return ResponseEntity.ok(Message.TUTOR_DELETED.getMessage());
     }
 }
