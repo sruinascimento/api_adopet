@@ -28,4 +28,11 @@ public class Tutor {
         this.city = data.city();
         this.personalDescription = data.personalDescription();
     }
+
+    public void updateTutorDataCompletely(TutorUpdatePut data) {
+        this.name = data.name();
+        this.phoneNumber = data.phoneNumber();
+        this.city = data.city();
+        this.personalDescription = data.personalDescription();
+    }
 }

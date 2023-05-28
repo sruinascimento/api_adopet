@@ -1,15 +1,14 @@
 package com.br.r.adopet.controller;
 
 import com.br.r.adopet.model.message.Message;
-import com.br.r.adopet.model.tutor.Tutor;
-import com.br.r.adopet.model.tutor.TutorListingData;
-import com.br.r.adopet.model.tutor.TutorRegisterData;
-import com.br.r.adopet.model.tutor.TutorRepository;
+import com.br.r.adopet.model.tutor.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -65,4 +64,19 @@ public class TutorController {
         tutorRepository.deleteById(id);
         return ResponseEntity.ok(Message.TUTOR_DELETED.getMessage());
     }
+
+    @PutMapping
+    @Transactional
+    public ResponseEntity<?> put(@RequestBody @Valid TutorUpdatePut data) {
+        if (!tutorRepository.existsById(data.id())) {
+            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
+        }
+
+        Tutor tutor = tutorRepository.getReferenceById(data.id());
+        tutor.updateTutorDataCompletely(data);
+        tutorRepository.save(tutor);
+
+        return ResponseEntity.ok(new TutorListingData(tutor));
+    }
+
 }
