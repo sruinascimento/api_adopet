@@ -1,10 +1,7 @@
 package com.br.r.adopet.model.tutor;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "tutors")
@@ -12,6 +9,8 @@ import lombok.ToString;
 @EqualsAndHashCode(of= "id")
 @Getter
 @ToString
+@Setter
+
 public class Tutor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +28,7 @@ public class Tutor {
         this.personalDescription = data.personalDescription();
     }
 
-    public void updateTutorDataCompletely(TutorUpdatePut data) {
+    public void updateTutorDataCompletely(TutorUpdate data) {
         this.name = data.name();
         this.phoneNumber = data.phoneNumber();
         this.city = data.city();

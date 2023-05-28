@@ -8,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,7 +66,7 @@ public class TutorController {
 
     @PutMapping
     @Transactional
-    public ResponseEntity<?> put(@RequestBody @Valid TutorUpdatePut data) {
+    public ResponseEntity<?> put(@RequestBody @Valid TutorUpdate data) {
         if (!tutorRepository.existsById(data.id())) {
             return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
         }
@@ -79,4 +78,32 @@ public class TutorController {
         return ResponseEntity.ok(new TutorListingData(tutor));
     }
 
+
+    @PatchMapping
+    @Transactional
+    public ResponseEntity<?> patch(@RequestBody TutorUpdate data) {
+        System.out.println(data);
+        if (data.id() == null || !tutorRepository.existsById(data.id())) {
+            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
+        }
+
+        Tutor tutor = tutorRepository.getReferenceById(data.id());
+        //Strategy ou Builder????
+        if (data.name() != null && !data.name().equals(tutor.getName())) {
+            tutor.setName(data.name());
+        }
+        if (data.phoneNumber() != null && !data.phoneNumber().equals(tutor.getPhoneNumber())) {
+            tutor.setPhoneNumber(data.phoneNumber());
+        }
+        if (data.city() != null && !data.city().equals(tutor.getCity())) {
+            tutor.setCity(data.city());
+        }
+        if (data.personalDescription() != null && !data.personalDescription().equals(tutor.getPersonalDescription())) {
+            tutor.setName(data.personalDescription());
+        }
+
+        tutorRepository.save(tutor);
+
+        return ResponseEntity.ok(new TutorListingData(tutor));
+    }
 }
