@@ -1,4 +1,4 @@
-package com.br.r.adopet.model.tutor;
+package br.com.rsoft.adopet.model.tutor;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
