@@ -1,7 +1,8 @@
-package com.br.r.adopet.controller;
+package br.com.rsoft.adopet.controller;
 
-import com.br.r.adopet.model.message.Message;
-import com.br.r.adopet.model.tutor.*;
+import br.com.rsoft.adopet.model.message.Message;
+import br.com.rsoft.adopet.model.tutor.*;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
