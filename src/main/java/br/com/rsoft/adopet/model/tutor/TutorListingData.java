@@ -1,4 +1,4 @@
-package com.br.r.adopet.model.tutor;
+package br.com.rsoft.adopet.model.tutor;
 
 public record TutorListingData(Long id, String name, String phoneNumber, String city, String personalDescription, String profilePhoto) {
     public TutorListingData(Tutor tutor) {
