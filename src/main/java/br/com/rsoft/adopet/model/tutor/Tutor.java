@@ -15,23 +15,20 @@ public class Tutor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Column(name = "profile_photo", columnDefinition = "TEXT")
+    private String profilePhoto;
     @Column(name = "phone_number")
     private String phoneNumber;
     private String city;
     @Column(name = "personal_description", columnDefinition = "TEXT")
     private String personalDescription;
 
-    public Tutor(TutorRegisterData data) {
-        this.name = data.name();
-        this.phoneNumber = data.phoneNumber();
-        this.city = data.city();
-        this.personalDescription = data.personalDescription();
-    }
 
-    public void updateTutorDataCompletely(TutorUpdate data) {
-        this.name = data.name();
-        this.phoneNumber = data.phoneNumber();
-        this.city = data.city();
-        this.personalDescription = data.personalDescription();
+    public Tutor(String name, String profilePhoto, String phoneNumber, String city, String personalDescription) {
+        this.name = name;
+        this.profilePhoto = profilePhoto;
+        this.phoneNumber = phoneNumber;
+        this.city = city;
+        this.personalDescription = personalDescription;
     }
 }

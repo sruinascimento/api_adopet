@@ -5,30 +5,45 @@ import com.br.r.adopet.model.tutor.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RestController
-@RequestMapping("tutors")
 public class TutorController {
-    @Autowired
-    private TutorRepository tutorRepository;
 
-    @PostMapping
-    @Transactional
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<TutorListingData> save(@RequestBody TutorRegisterData data) {
-        Tutor tutor = new Tutor(data);
-        tutorRepository.save(tutor);
-        return ResponseEntity.ok(new TutorListingData(tutor));
+    private final TutorRepository tutorRepository;
+
+    public TutorController(TutorRepository tutorRepository) {
+        this.tutorRepository = tutorRepository;
     }
 
-    @GetMapping
+    @PostMapping("tutors")
+    @Transactional
+    public ResponseEntity<?> save(@RequestBody @Valid TutorRegisterData data, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return handleValidationErrors(bindingResult);
+        }
+        try {
+            Tutor tutor = data.toTutor();
+            tutorRepository.save(tutor);
+            TutorListingData tutorResponse = new TutorListingData(tutor);
+            return ResponseEntity.ok(tutorResponse);
+        } catch (DataIntegrityViolationException e) {
+            throw new RuntimeException("Erro de violação de integridade " + e.getMessage());
+
+        }
+    }
+
+    @GetMapping("tutors")
     public ResponseEntity<?> get() {
         List<Tutor> tutors = tutorRepository.findAll();
         if (tutors.isEmpty()) {
@@ -42,7 +57,7 @@ public class TutorController {
         return ResponseEntity.ok(tutorsListingData);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("tutors/{id}")
     public ResponseEntity<?> getById(@PathVariable Long id) {
         try {
             Tutor tutor = tutorRepository.getReferenceById(id);
@@ -51,44 +66,53 @@ public class TutorController {
             exception.printStackTrace();
             return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
         }
-
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("tutors/{id}")
     @Transactional
     public ResponseEntity<String> delete(@PathVariable Long id) {
         if (!tutorRepository.existsById(id)) {
             return ResponseEntity.ok(Message.TUTOR_NOT_DELETED.getMessage());
         }
         tutorRepository.deleteById(id);
+
         return ResponseEntity.ok(Message.TUTOR_DELETED.getMessage());
     }
 
-    @PutMapping
+    @PutMapping("tutors")
     @Transactional
-    public ResponseEntity<?> put(@RequestBody @Valid TutorUpdate data) {
+    public ResponseEntity<?> put(@RequestBody @Valid TutorUpdatePut data, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return handleValidationErrors(bindingResult);
+        }
+        if (!tutorRepository.existsById(data.id())) {
+            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
+        }
+
+        Tutor existingTutor = tutorRepository.getReferenceById(data.id());
+        existingTutor.setName(data.name());
+        existingTutor.setProfilePhoto(data.profilePhoto());
+        existingTutor.setPhoneNumber(data.phoneNumber());
+        existingTutor.setCity(data.city());
+        existingTutor.setPersonalDescription(data.personalDescription());
+        tutorRepository.save(existingTutor);
+
+        return ResponseEntity.ok(new TutorListingData(existingTutor));
+    }
+
+
+    @PatchMapping("tutors")
+    @Transactional
+    public ResponseEntity<?> patch(@RequestBody @Valid TutorUpdatePatch data, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return handleValidationErrors(bindingResult);
+        }
         if (!tutorRepository.existsById(data.id())) {
             return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
         }
 
         Tutor tutor = tutorRepository.getReferenceById(data.id());
-        tutor.updateTutorDataCompletely(data);
-        tutorRepository.save(tutor);
 
-        return ResponseEntity.ok(new TutorListingData(tutor));
-    }
-
-
-    @PatchMapping
-    @Transactional
-    public ResponseEntity<?> patch(@RequestBody TutorUpdate data) {
-        System.out.println(data);
-        if (data.id() == null || !tutorRepository.existsById(data.id())) {
-            return ResponseEntity.ok(Message.TUTOR_NOT_FOUND.getMessage());
-        }
-
-        Tutor tutor = tutorRepository.getReferenceById(data.id());
-        //Strategy ou Builder????
         if (data.name() != null && !data.name().equals(tutor.getName())) {
             tutor.setName(data.name());
         }
@@ -105,5 +129,11 @@ public class TutorController {
         tutorRepository.save(tutor);
 
         return ResponseEntity.ok(new TutorListingData(tutor));
+    }
+
+    private ResponseEntity<?> handleValidationErrors(BindingResult bindingResult) {
+        Map<String, String> errors = bindingResult.getFieldErrors().stream()
+                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 }
