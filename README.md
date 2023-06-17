@@ -10,7 +10,7 @@ Acesse o Figma do projeto no <a href="https://www.figma.com/file/TlfkDoIu8uyjZNl
 
 
 
-## 🔨 Tecnologias
+## 🪓 Tecnologias
 
 - ``Java - 17.0.3 LTS``
 - ``Spring - 3.0``
