@@ -27,12 +27,7 @@ Acesse o Figma do projeto no <a href="https://www.figma.com/file/TlfkDoIu8uyjZNl
  ![Insomnia](https://img.shields.io/badge/Insomnia-black?style=for-the-badge&logo=insomnia&logoColor=5849BE)
 
 
-## Status do projeto
-![status-projeto](https://img.shields.io/badge/status-desenvolvimento-green)
-
-
-## 🤿 4 Semanas de desafios 
-
+## 🎯 4 Semanas de desafios 
 
 ### 1ª Semana
   - [x] Implementar a base de dados e criar a tabela para Tutores
