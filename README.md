@@ -46,3 +46,5 @@ Acesse o Figma do projeto no <a href="https://www.figma.com/file/TlfkDoIu8uyjZNl
   - [x] Fazer validações nos campos obrigatórios 
 
 #### ✅ Resultados
+
+Desenvolvido por <a href="https://github.com/sruinascimento">@sruinascimento</a>
