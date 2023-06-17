@@ -6,7 +6,6 @@ import br.com.rsoft.adopet.model.tutor.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -33,15 +32,11 @@ public class TutorController {
         if (bindingResult.hasErrors()) {
             return handleValidationErrors(bindingResult);
         }
-        try {
-            Tutor tutor = data.toTutor();
-            tutorRepository.save(tutor);
-            TutorListingData tutorResponse = new TutorListingData(tutor);
-            return ResponseEntity.ok(tutorResponse);
-        } catch (DataIntegrityViolationException e) {
-            throw new RuntimeException("Erro de violação de integridade " + e.getMessage());
 
-        }
+        Tutor tutor = data.toTutor();
+        tutorRepository.save(tutor);
+        TutorListingData tutorResponse = new TutorListingData(tutor);
+        return ResponseEntity.ok(tutorResponse);
     }
 
     @GetMapping("tutors")
@@ -106,6 +101,7 @@ public class TutorController {
     @Transactional
     public ResponseEntity<?> patch(@RequestBody @Valid TutorUpdatePatch data, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            System.out.println("erros");
             return handleValidationErrors(bindingResult);
         }
         if (!tutorRepository.existsById(data.id())) {
@@ -124,7 +120,7 @@ public class TutorController {
             tutor.setCity(data.city());
         }
         if (data.personalDescription() != null && !data.personalDescription().equals(tutor.getPersonalDescription())) {
-            tutor.setName(data.personalDescription());
+            tutor.setPersonalDescription(data.personalDescription());
         }
 
         tutorRepository.save(tutor);
