@@ -2,7 +2,7 @@
 
 <h1 align="center"> API Adopet</h1>
 
-![status-projeto](https://img.shields.io/badge/status-desenvolvimento-green) ![license](https://img.shields.io/badge/licence-MIT-green) ![Java-version](https://img.shields.io/badge/java-version_17.0.2-red)
+![status-projeto](https://img.shields.io/badge/status-desenvolvimento-green) ![license](https://img.shields.io/badge/licence-MIT-green) ![Java-version](https://img.shields.io/badge/java-version_17.0.2-red) ![springboot-version](https://img.shields.io/badge/springboot-version_3.1.0-red)
 
 <p align>A Adopet é uma plataforma que conecta pessoas interessadas em adotar animais de estimação com abrigos e ONGs. Com protótipos testados pelo time de UX/UI, a primeira versão foi requisitada. Os usuários podem criar perfis, visualizar animais disponíveis para adoção, enquanto abrigos/ONGs podem criar perfis para os pets e concretizar as adoções. As principais funcionalidades do backend incluem a implementação de uma API REST com rotas, validações de regras de negócio, persistência de dados em uma base de dados e serviço de autenticação para acesso às rotas. O próximo passo é a integração com o frontend.</p>
 
